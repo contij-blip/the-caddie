@@ -807,8 +807,9 @@
 </footer>
 
 <script>
-function handleSignup(source) {
+async function handleSignup(source) {
   const input = document.getElementById(source + '-email');
+  const button = input.parentElement.querySelector('button');
   const email = input.value.trim();
 
   if (!email || !email.includes('@')) {
@@ -821,19 +822,37 @@ function handleSignup(source) {
     return;
   }
 
-  // In production, you'd send this to your backend/email service
-  // For now, just show success
-  console.log('Signup:', email);
+  button.textContent = 'Sending...';
+  button.disabled = true;
 
-  if (source === 'hero') {
-    document.getElementById('hero-form').style.display = 'none';
-    document.querySelector('.hero-note').style.display = 'none';
-    const success = document.getElementById('hero-success');
-    success.style.display = 'flex';
-  } else {
-    document.getElementById('cta-form').style.display = 'none';
-    const success = document.getElementById('cta-success');
-    success.style.display = 'flex';
+  try {
+    const response = await fetch('https://formspree.io/f/xaqdgrww', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, source: source })
+    });
+
+    if (response.ok) {
+      if (source === 'hero') {
+        document.getElementById('hero-form').style.display = 'none';
+        document.querySelector('.hero-note').style.display = 'none';
+        document.getElementById('hero-success').style.display = 'flex';
+      } else {
+        document.getElementById('cta-form').style.display = 'none';
+        document.getElementById('cta-success').style.display = 'flex';
+      }
+    } else {
+      throw new Error('Form submission failed');
+    }
+  } catch (error) {
+    button.textContent = source === 'hero' ? 'Get Early Access' : 'Join Free';
+    button.disabled = false;
+    input.style.borderColor = '#c0392b';
+    input.setAttribute('placeholder', 'Something went wrong, try again');
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.setAttribute('placeholder', 'you@email.com');
+    }, 3000);
   }
 }
 
