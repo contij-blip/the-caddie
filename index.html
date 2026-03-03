@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Caddie — Track Your Golf Side Games</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-deep: #1a3c2a;
+    --green-rich: #2d6a4f;
+    --green-bright: #40916c;
+    --green-light: #74c69d;
+    --green-pale: #b7e4c7;
+    --cream: #f8f6f0;
+    --cream-dark: #ede9df;
+    --gold: #c9a227;
+    --gold-light: #e8d48b;
+    --text-dark: #1a1a1a;
+    --text-mid: #4a4a4a;
+    --text-light: #7a7a7a;
+    --white: #ffffff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text-dark);
+    overflow-x: hidden;
+  }
+
+  /* GRAIN OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    backdrop-filter: blur(20px);
+    background: rgba(248, 246, 240, 0.85);
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: var(--green-deep);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--green-deep);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  .nav-cta {
+    padding: 10px 24px;
+    background: var(--green-deep);
+    color: var(--cream);
+    border: none;
+    border-radius: 100px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .nav-cta:hover { background: var(--green-rich); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    position: relative;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 40%, rgba(45,106,79,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 20%, rgba(201,162,39,0.05) 0%, transparent 60%);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 18px;
+    background: var(--white);
+    border: 1px solid var(--cream-dark);
+    border-radius: 100px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--green-rich);
+    margin-bottom: 32px;
+    animation: fadeInUp 0.8s ease both;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .badge-dot {
+    width: 8px; height: 8px;
+    background: var(--green-bright);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    line-height: 1.05;
+    color: var(--green-deep);
+    max-width: 800px;
+    margin-bottom: 24px;
+    animation: fadeInUp 0.8s ease 0.15s both;
+  }
+
+  .hero-sub {
+    font-size: clamp(1.05rem, 2vw, 1.25rem);
+    color: var(--text-mid);
+    max-width: 540px;
+    line-height: 1.65;
+    margin-bottom: 48px;
+    animation: fadeInUp 0.8s ease 0.3s both;
+  }
+
+  .hero-form {
+    display: flex;
+    gap: 12px;
+    animation: fadeInUp 0.8s ease 0.45s both;
+    width: 100%;
+    max-width: 480px;
+  }
+
+  .hero-form input {
+    flex: 1;
+    padding: 16px 24px;
+    border: 2px solid var(--cream-dark);
+    border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    background: var(--white);
+    color: var(--text-dark);
+    transition: border-color 0.3s ease;
+    outline: none;
+  }
+  .hero-form input:focus { border-color: var(--green-bright); }
+  .hero-form input::placeholder { color: var(--text-light); }
+
+  .hero-form button {
+    padding: 16px 32px;
+    background: var(--green-deep);
+    color: var(--cream);
+    border: none;
+    border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .hero-form button:hover { background: var(--green-rich); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,60,42,0.25); }
+
+  .hero-note {
+    margin-top: 16px;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    animation: fadeInUp 0.8s ease 0.6s both;
+  }
+
+  /* SUCCESS STATE */
+  .success-msg {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    animation: fadeInUp 0.5s ease both;
+  }
+  .success-msg .check {
+    width: 56px; height: 56px;
+    background: var(--green-bright);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: white;
+  }
+  .success-msg p {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--green-deep);
+  }
+  .success-msg span {
+    font-size: 0.95rem;
+    color: var(--text-mid);
+  }
+
+  /* PHONE MOCKUPS */
+  .mockup-section {
+    padding: 40px 24px 100px;
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .phone {
+    width: 260px;
+    background: var(--white);
+    border-radius: 28px;
+    padding: 16px;
+    box-shadow:
+      0 4px 6px rgba(0,0,0,0.03),
+      0 20px 60px rgba(0,0,0,0.08),
+      inset 0 1px 0 rgba(255,255,255,0.8);
+    border: 1px solid rgba(0,0,0,0.06);
+    transition: transform 0.4s ease;
+  }
+  .phone:hover { transform: translateY(-8px); }
+  .phone:nth-child(1) { animation: fadeInUp 0.8s ease 0.2s both; }
+  .phone:nth-child(2) { animation: fadeInUp 0.8s ease 0.35s both; transform: translateY(-20px); }
+  .phone:nth-child(3) { animation: fadeInUp 0.8s ease 0.5s both; }
+  .phone:nth-child(2):hover { transform: translateY(-28px); }
+
+  .phone-notch {
+    width: 80px; height: 6px;
+    background: var(--cream-dark);
+    border-radius: 100px;
+    margin: 0 auto 16px;
+  }
+
+  .phone-screen {
+    background: var(--cream);
+    border-radius: 16px;
+    padding: 20px 16px;
+    min-height: 380px;
+  }
+
+  .screen-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--green-deep);
+    margin-bottom: 4px;
+  }
+
+  .screen-sub {
+    font-size: 0.72rem;
+    color: var(--text-light);
+    margin-bottom: 16px;
+  }
+
+  /* Scorecard Screen */
+  .score-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+  .score-row:nth-child(odd) { background: var(--white); }
+  .score-row .name { color: var(--text-dark); }
+  .score-row .score { color: var(--green-rich); font-weight: 700; }
+  .score-row.leader {
+    background: var(--green-deep);
+    color: var(--cream);
+  }
+  .score-row.leader .score { color: var(--gold-light); }
+  .score-row.leader .name { color: var(--cream); }
+
+  /* Settlement Screen */
+  .settle-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: var(--white);
+    border-radius: 12px;
+    margin-bottom: 8px;
+  }
+  .settle-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+  }
+  .settle-text { flex: 1; }
+  .settle-text .settle-name { font-size: 0.78rem; font-weight: 600; color: var(--text-dark); }
+  .settle-text .settle-detail { font-size: 0.68rem; color: var(--text-light); }
+  .settle-amount {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .owes { color: #c0392b; }
+  .gets { color: var(--green-rich); }
+
+  /* Game Select Screen */
+  .game-card {
+    padding: 14px 16px;
+    background: var(--white);
+    border-radius: 12px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid transparent;
+    transition: border-color 0.2s;
+  }
+  .game-card.selected { border-color: var(--green-bright); background: rgba(116,198,157,0.08); }
+  .game-name { font-size: 0.82rem; font-weight: 700; color: var(--text-dark); }
+  .game-desc { font-size: 0.68rem; color: var(--text-light); margin-top: 2px; }
+  .game-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--cream-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: white;
+  }
+  .game-card.selected .game-check {
+    background: var(--green-bright);
+    border-color: var(--green-bright);
+  }
+
+  /* FEATURES */
+  .features {
+    padding: 80px 24px 100px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .features-label {
+    text-align: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--green-rich);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .features h2 {
+    text-align: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    color: var(--green-deep);
+    margin-bottom: 60px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .feature-card {
+    padding: 32px 28px;
+    background: var(--white);
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+
+  .feature-icon {
+    width: 48px; height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 18px;
+  }
+
+  .feature-card h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+    color: var(--text-mid);
+    line-height: 1.6;
+  }
+
+  /* SOCIAL PROOF / GAMES */
+  .games-section {
+    padding: 60px 24px 80px;
+    text-align: center;
+  }
+
+  .games-section h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--green-deep);
+    margin-bottom: 40px;
+  }
+
+  .game-tags {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .game-tag {
+    padding: 12px 24px;
+    background: var(--white);
+    border: 1.5px solid var(--cream-dark);
+    border-radius: 100px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--green-deep);
+    transition: all 0.3s ease;
+  }
+  .game-tag:hover {
+    border-color: var(--green-bright);
+    background: rgba(116,198,157,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 80px 24px 100px;
+    text-align: center;
+  }
+
+  .cta-box {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 56px 40px;
+    background: var(--green-deep);
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cta-box::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -30%;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(116,198,157,0.15), transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-box h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+    color: var(--cream);
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .cta-box p {
+    color: var(--green-pale);
+    font-size: 1.05rem;
+    margin-bottom: 36px;
+    line-height: 1.6;
+    position: relative;
+  }
+
+  .cta-form {
+    display: flex;
+    gap: 12px;
+    max-width: 440px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .cta-form input {
+    flex: 1;
+    padding: 16px 24px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    background: rgba(255,255,255,0.1);
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.3s;
+  }
+  .cta-form input:focus { border-color: var(--green-light); }
+  .cta-form input::placeholder { color: rgba(255,255,255,0.4); }
+
+  .cta-form button {
+    padding: 16px 28px;
+    background: var(--gold);
+    color: var(--green-deep);
+    border: none;
+    border-radius: 14px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  .cta-form button:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    padding: 40px 24px;
+    text-align: center;
+    border-top: 1px solid var(--cream-dark);
+  }
+  footer p {
+    font-size: 0.85rem;
+    color: var(--text-light);
+  }
+
+  /* SUCCESS for bottom CTA */
+  .cta-success {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .cta-success .check {
+    width: 48px; height: 48px;
+    background: var(--gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--green-deep);
+  }
+  .cta-success p { color: var(--cream) !important; font-weight: 600; font-size: 1.1rem !important; margin-bottom: 0 !important; }
+  .cta-success span { color: var(--green-pale); font-size: 0.9rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .logo { font-size: 1.25rem; }
+    .hero { padding: 100px 20px 60px; }
+    .hero-form { flex-direction: column; }
+    .hero-form button { width: 100%; }
+    .cta-form { flex-direction: column; }
+    .cta-form button { width: 100%; }
+    .cta-box { padding: 40px 24px; }
+    .phone { width: 220px; }
+    .phone:nth-child(2) { transform: translateY(-10px); }
+    .phone:nth-child(2):hover { transform: translateY(-18px); }
+    .mockup-section { gap: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <div class="logo-icon">⛳</div>
+    The Caddie
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('hero-email').focus()">Join Waitlist</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="badge">
+    <span class="badge-dot"></span>
+    Coming Soon — Join the Waitlist
+  </div>
+  <h1>Your golf side games,<br>finally organized.</h1>
+  <p class="hero-sub">Nassau, Skins, Wolf — tracked live on your phone. Every bet, every hole, every bragging right — settled before you reach the clubhouse.</p>
+
+  <div class="hero-form" id="hero-form">
+    <input type="email" id="hero-email" placeholder="you@email.com" required>
+    <button onclick="handleSignup('hero')">Get Early Access</button>
+  </div>
+  <div class="success-msg" id="hero-success">
+    <div class="check">✓</div>
+    <p>You're on the list!</p>
+    <span>We'll let you know the moment The Caddie launches.</span>
+  </div>
+  <p class="hero-note">Free to join. Be the first to play.</p>
+</section>
+
+<!-- PHONE MOCKUPS -->
+<section class="mockup-section">
+  <!-- Screen 1: Game Select -->
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <p class="screen-title">Choose Your Games</p>
+      <p class="screen-sub">Saturday at Pine Valley • 4 players</p>
+      <div class="game-card selected">
+        <div>
+          <div class="game-name">Nassau</div>
+          <div class="game-desc">Front 9 · Back 9 · Overall</div>
+        </div>
+        <div class="game-check">✓</div>
+      </div>
+      <div class="game-card selected">
+        <div>
+          <div class="game-name">Skins</div>
+          <div class="game-desc">$2 per skin, carryovers on</div>
+        </div>
+        <div class="game-check">✓</div>
+      </div>
+      <div class="game-card">
+        <div>
+          <div class="game-name">Wolf</div>
+          <div class="game-desc">Rotating picker each hole</div>
+        </div>
+        <div class="game-check"></div>
+      </div>
+      <div class="game-card">
+        <div>
+          <div class="game-name">Bingo Bango Bongo</div>
+          <div class="game-desc">Points for first on, closest, first in</div>
+        </div>
+        <div class="game-check"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: Live Leaderboard -->
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <p class="screen-title">Live Leaderboard</p>
+      <p class="screen-sub">Nassau · Through 14 holes</p>
+      <div class="score-row leader">
+        <span class="name">🏆 Dave M.</span>
+        <span class="score">+$18</span>
+      </div>
+      <div class="score-row">
+        <span class="name">Tom R.</span>
+        <span class="score">+$6</span>
+      </div>
+      <div class="score-row">
+        <span class="name">Chris P.</span>
+        <span class="score">-$8</span>
+      </div>
+      <div class="score-row">
+        <span class="name">Mike L.</span>
+        <span class="score">-$16</span>
+      </div>
+      <div style="margin-top: 16px; padding: 14px; background: var(--white); border-radius: 12px; border-left: 3px solid var(--gold);">
+        <div style="font-size: 0.7rem; color: var(--text-light); margin-bottom: 4px;">LATEST UPDATE</div>
+        <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-dark);">Dave birdied #14 — picked up 2 skins! 🔥</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: Settlement -->
+  <div class="phone">
+    <div class="phone-notch"></div>
+    <div class="phone-screen">
+      <p class="screen-title">Settlement</p>
+      <p class="screen-sub">Round complete · 18 holes</p>
+      <div class="settle-item">
+        <div class="settle-avatar" style="background: var(--green-rich);">DM</div>
+        <div class="settle-text">
+          <div class="settle-name">Dave M.</div>
+          <div class="settle-detail">Won Nassau front + 4 skins</div>
+        </div>
+        <span class="settle-amount gets">+$24</span>
+      </div>
+      <div class="settle-item">
+        <div class="settle-avatar" style="background: var(--gold);">TR</div>
+        <div class="settle-text">
+          <div class="settle-name">Tom R.</div>
+          <div class="settle-detail">Won Nassau back 9</div>
+        </div>
+        <span class="settle-amount gets">+$8</span>
+      </div>
+      <div class="settle-item">
+        <div class="settle-avatar" style="background: #6c5ce7;">CP</div>
+        <div class="settle-text">
+          <div class="settle-name">Chris P.</div>
+          <div class="settle-detail">Owes Dave $12, Tom $2</div>
+        </div>
+        <span class="settle-amount owes">-$14</span>
+      </div>
+      <div class="settle-item">
+        <div class="settle-avatar" style="background: #e17055;">ML</div>
+        <div class="settle-text">
+          <div class="settle-name">Mike L.</div>
+          <div class="settle-detail">Owes Dave $12, Tom $6</div>
+        </div>
+        <span class="settle-amount owes">-$18</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+  <p class="features-label">Why The Caddie</p>
+  <h2>Everything your<br>group text can't do.</h2>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon" style="background: rgba(45,106,79,0.1);">🎯</div>
+      <h3>All Your Games, One Place</h3>
+      <p>Nassau, Skins, Wolf, Bingo Bango Bongo, or create your own custom game. Set wagers and let The Caddie handle the math.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background: rgba(201,162,39,0.12);">📊</div>
+      <h3>Live Leaderboard</h3>
+      <p>Everyone in your group sees the same real-time scoreboard on their phone. No more "what's the score?" on every tee box.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background: rgba(108,92,231,0.1);">🤝</div>
+      <h3>Instant Settlement</h3>
+      <p>The round ends and you instantly see who owes who, down to the dollar. No arguments, no forgotten debts.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background: rgba(225,112,85,0.1);">📈</div>
+      <h3>Running History</h3>
+      <p>Track every round with your group over time. Season-long stats, head-to-head records, and bragging rights — all documented.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background: rgba(45,106,79,0.1);">⚡</div>
+      <h3>Fast Score Entry</h3>
+      <p>Designed for the course, not the couch. Enter scores in seconds between holes — it never slows down your round.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon" style="background: rgba(201,162,39,0.12);">🔔</div>
+      <h3>Mid-Round Alerts</h3>
+      <p>"You just went 2-down on the back!" Get updates that keep the competition alive and the trash talk flowing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORTED GAMES -->
+<section class="games-section">
+  <h2>Supports the games you actually play.</h2>
+  <div class="game-tags">
+    <div class="game-tag">🏌️ Nassau</div>
+    <div class="game-tag">💰 Skins</div>
+    <div class="game-tag">🐺 Wolf</div>
+    <div class="game-tag">🎯 Bingo Bango Bongo</div>
+    <div class="game-tag">📝 Custom Games</div>
+    <div class="game-tag">🔄 Match Play</div>
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Get on the list.</h2>
+    <p>Be the first to try The Caddie when it launches. Early access members get a free month of unlimited use.</p>
+    <div class="cta-form" id="cta-form">
+      <input type="email" id="cta-email" placeholder="you@email.com">
+      <button onclick="handleSignup('cta')">Join Free</button>
+    </div>
+    <div class="cta-success" id="cta-success">
+      <div class="check">✓</div>
+      <p>You're in!</p>
+      <span>We'll email you when it's go time.</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 The Caddie. For recreational use among friends.</p>
+</footer>
+
+<script>
+function handleSignup(source) {
+  const input = document.getElementById(source + '-email');
+  const email = input.value.trim();
+
+  if (!email || !email.includes('@')) {
+    input.style.borderColor = '#c0392b';
+    input.setAttribute('placeholder', 'Please enter a valid email');
+    setTimeout(() => {
+      input.style.borderColor = '';
+      input.setAttribute('placeholder', 'you@email.com');
+    }, 2000);
+    return;
+  }
+
+  // In production, you'd send this to your backend/email service
+  // For now, just show success
+  console.log('Signup:', email);
+
+  if (source === 'hero') {
+    document.getElementById('hero-form').style.display = 'none';
+    document.querySelector('.hero-note').style.display = 'none';
+    const success = document.getElementById('hero-success');
+    success.style.display = 'flex';
+  } else {
+    document.getElementById('cta-form').style.display = 'none';
+    const success = document.getElementById('cta-success');
+    success.style.display = 'flex';
+  }
+}
+
+// Enter key support
+document.querySelectorAll('input[type="email"]').forEach(input => {
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const source = input.id.split('-')[0];
+      handleSignup(source);
+    }
+  });
+});
+</script>
+
+</body>
+</html>
