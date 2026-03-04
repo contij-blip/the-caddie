@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Caddie — Track Your Golf Side Games</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>Settle Up Golf — Track Your Golf Side Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
   :root {
     --green-deep: #1a3c2a;
@@ -45,50 +45,78 @@
   nav {
     position: fixed;
     top: 0; left: 0; right: 0;
-    padding: 20px 40px;
+    padding: 16px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     z-index: 100;
     backdrop-filter: blur(20px);
-    background: rgba(248, 246, 240, 0.85);
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    background: rgba(26, 26, 26, 0.92);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
   }
 
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.5rem;
-    color: var(--green-deep);
+  /* LOGO IN NAV — Dark variant style */
+  .nav-logo {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
+    text-decoration: none;
   }
 
-  .logo-icon {
-    width: 36px;
-    height: 36px;
-    background: var(--green-deep);
-    border-radius: 10px;
+  .nav-logo-mark {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    font-size: 18px;
     line-height: 1;
+  }
+
+  .nav-logo-settle {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    line-height: 0.9;
+  }
+
+  .nav-logo-up {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 18px;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+    line-height: 0.9;
+  }
+
+  .nav-logo-divider {
+    width: 100%;
+    height: 1.5px;
+    background: var(--gold);
+    margin: 2px 0;
+    border-radius: 2px;
+  }
+
+  .nav-logo-golf {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 7px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    padding-left: 4px;
   }
 
   .nav-cta {
     padding: 10px 24px;
-    background: var(--green-deep);
-    color: var(--cream);
+    background: var(--gold);
+    color: var(--green-deep);
     border: none;
     border-radius: 100px;
     font-family: 'Plus Jakarta Sans', sans-serif;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
   }
-  .nav-cta:hover { background: var(--green-rich); transform: translateY(-1px); }
+  .nav-cta:hover { background: var(--gold-light); transform: translateY(-1px); }
 
   /* HERO */
   .hero {
@@ -105,6 +133,82 @@
       radial-gradient(ellipse 50% 40% at 80% 20%, rgba(201,162,39,0.05) 0%, transparent 60%);
   }
 
+  /* HERO LOGO — larger dark variant */
+  .hero-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 32px;
+    animation: fadeInUp 0.8s ease both;
+  }
+
+  .hero-logo-mark {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #1a1a1a;
+    padding: 28px 40px 22px;
+    border-radius: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  }
+
+  .hero-logo-settle {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 52px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    line-height: 0.85;
+    position: relative;
+  }
+
+  .hero-logo-up {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 52px;
+    letter-spacing: -1px;
+    color: #ffffff;
+    line-height: 0.85;
+  }
+
+  .hero-logo-divider {
+    width: 100%;
+    height: 3px;
+    background: var(--gold);
+    margin: 8px 0;
+    border-radius: 2px;
+  }
+
+  .hero-logo-golf {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 10px;
+    color: var(--gold);
+    padding-left: 10px;
+  }
+
+  /* Flag pin accent */
+  .hero-logo-settle .flag-pole {
+    position: absolute;
+    top: -12px;
+    right: 34px;
+    width: 2px;
+    height: 16px;
+    background: var(--gold);
+  }
+
+  .hero-logo-settle .flag-accent {
+    position: absolute;
+    top: -12px;
+    right: 34px;
+    width: 0;
+    height: 0;
+    border-left: 7px solid var(--gold);
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+  }
+
   .badge {
     display: inline-flex;
     align-items: center;
@@ -117,7 +221,7 @@
     font-weight: 600;
     color: var(--green-rich);
     margin-bottom: 32px;
-    animation: fadeInUp 0.8s ease both;
+    animation: fadeInUp 0.8s ease 0.15s both;
     box-shadow: 0 2px 12px rgba(0,0,0,0.04);
   }
   .badge-dot {
@@ -134,7 +238,7 @@
     color: var(--green-deep);
     max-width: 800px;
     margin-bottom: 24px;
-    animation: fadeInUp 0.8s ease 0.15s both;
+    animation: fadeInUp 0.8s ease 0.25s both;
   }
 
   .hero-sub {
@@ -143,13 +247,13 @@
     max-width: 540px;
     line-height: 1.65;
     margin-bottom: 48px;
-    animation: fadeInUp 0.8s ease 0.3s both;
+    animation: fadeInUp 0.8s ease 0.4s both;
   }
 
   .hero-form {
     display: flex;
     gap: 12px;
-    animation: fadeInUp 0.8s ease 0.45s both;
+    animation: fadeInUp 0.8s ease 0.55s both;
     width: 100%;
     max-width: 480px;
   }
@@ -188,7 +292,7 @@
     margin-top: 16px;
     font-size: 0.82rem;
     color: var(--text-light);
-    animation: fadeInUp 0.8s ease 0.6s both;
+    animation: fadeInUp 0.8s ease 0.7s both;
   }
 
   /* SUCCESS STATE */
@@ -418,7 +522,7 @@
     line-height: 1.6;
   }
 
-  /* SOCIAL PROOF / GAMES */
+  /* SUPPORTED GAMES */
   .games-section {
     padding: 60px 24px 80px;
     text-align: center;
@@ -577,9 +681,11 @@
 
   /* RESPONSIVE */
   @media (max-width: 600px) {
-    nav { padding: 16px 20px; }
-    .logo { font-size: 1.25rem; }
+    nav { padding: 14px 20px; }
     .hero { padding: 100px 20px 60px; }
+    .hero-logo-mark { padding: 20px 28px 16px; }
+    .hero-logo-settle, .hero-logo-up { font-size: 38px; }
+    .hero-logo-golf { font-size: 14px; letter-spacing: 8px; }
     .hero-form { flex-direction: column; }
     .hero-form button { width: 100%; }
     .cta-form { flex-direction: column; }
@@ -596,15 +702,33 @@
 
 <!-- NAV -->
 <nav>
-  <div class="logo">
-    <div class="logo-icon">⛳</div>
-    The Caddie
-  </div>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-mark">
+      <div class="nav-logo-settle">SETTLE</div>
+      <div class="nav-logo-up">UP</div>
+      <div class="nav-logo-divider"></div>
+      <div class="nav-logo-golf">GOLF</div>
+    </div>
+  </a>
   <button class="nav-cta" onclick="document.getElementById('hero-email').focus()">Join Waitlist</button>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
+  <!-- Dark variant logo -->
+  <div class="hero-logo">
+    <div class="hero-logo-mark">
+      <div class="hero-logo-settle">
+        SETTLE
+        <div class="flag-pole"></div>
+        <div class="flag-accent"></div>
+      </div>
+      <div class="hero-logo-up">UP</div>
+      <div class="hero-logo-divider"></div>
+      <div class="hero-logo-golf">GOLF</div>
+    </div>
+  </div>
+
   <div class="badge">
     <span class="badge-dot"></span>
     Coming Soon — Join the Waitlist
@@ -619,7 +743,7 @@
   <div class="success-msg" id="hero-success">
     <div class="check">✓</div>
     <p>You're on the list!</p>
-    <span>We'll let you know the moment The Caddie launches.</span>
+    <span>We'll let you know the moment Settle Up Golf launches.</span>
   </div>
   <p class="hero-note">Free to join. Be the first to play.</p>
 </section>
@@ -736,13 +860,13 @@
 
 <!-- FEATURES -->
 <section class="features">
-  <p class="features-label">Why The Caddie</p>
+  <p class="features-label">Why Settle Up Golf</p>
   <h2>Everything your<br>group text can't do.</h2>
   <div class="features-grid">
     <div class="feature-card">
       <div class="feature-icon" style="background: rgba(45,106,79,0.1);">🎯</div>
       <h3>All Your Games, One Place</h3>
-      <p>Nassau, Skins, Wolf, Bingo Bango Bongo, or create your own custom game. Set wagers and let The Caddie handle the math.</p>
+      <p>Nassau, Skins, Wolf, Bingo Bango Bongo, or create your own custom game. Set wagers and let Settle Up handle the math.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon" style="background: rgba(201,162,39,0.12);">📊</div>
@@ -752,7 +876,7 @@
     <div class="feature-card">
       <div class="feature-icon" style="background: rgba(108,92,231,0.1);">🤝</div>
       <h3>Instant Settlement</h3>
-      <p>The round ends and you instantly see who owes who, down to the dollar. No arguments, no forgotten debts.</p>
+      <p>The round ends and you instantly see who came out on top, down to the dollar. No arguments, no forgotten bets.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon" style="background: rgba(225,112,85,0.1);">📈</div>
@@ -789,7 +913,7 @@
 <section class="cta-section">
   <div class="cta-box">
     <h2>Get on the list.</h2>
-    <p>Be the first to try The Caddie when it launches. Early access members get a free month of unlimited use.</p>
+    <p>Be the first to try Settle Up Golf when it launches. Early access members get a free month of unlimited use.</p>
     <div class="cta-form" id="cta-form">
       <input type="email" id="cta-email" placeholder="you@email.com">
       <button onclick="handleSignup('cta')">Join Free</button>
@@ -803,7 +927,7 @@
 </section>
 
 <footer>
-  <p>© 2026 The Caddie. For recreational use among friends.</p>
+  <p>© 2026 Settle Up Golf. For recreational use among friends.</p>
 </footer>
 
 <script>
